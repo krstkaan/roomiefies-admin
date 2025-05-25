@@ -24,6 +24,48 @@ export interface ListingsCountResponse {
     total: number;
 }
 
+// Log arayüzleri
+export interface UserLog {
+    id: number;
+    user_id: number;
+    action: string;
+    created_at: string;
+    updated_at: string;
+    user?: {
+        id: number;
+        name: string;
+        email: string;
+    };
+}
+
+export interface ListingLog {
+    id: number;
+    user_id: number;
+    listing_id: number;
+    action: string;
+    created_at: string;
+    updated_at: string;
+    user?: {
+        id: number;
+        name: string;
+        email: string;
+    };
+    listing?: {
+        id: number;
+        title: string;
+        status: string;
+    };
+}
+
+export interface LogFilters {
+    user_id?: number;
+    action?: string;
+    listing_id?: number;
+    limit?: number;
+    per_page?: number;
+    page?: number;
+}
+
 class ApiClient {
     private baseURL: string;
     private adminPrefix: string;
@@ -231,6 +273,53 @@ class ApiClient {
 
     async deleteListing(id: number): Promise<ApiResponse<any>> {
         return this.delete(`/listings/${id}`);
+    }
+
+    // ==== Logs (Yeni Eklenen) ====
+    async getUserLogs(filters: LogFilters = {}): Promise<ApiResponse<PaginatedResponse<UserLog> | UserLog[]>> {
+        const params = new URLSearchParams();
+        params.append("type", "user");
+
+        if (filters.user_id) params.append("user_id", filters.user_id.toString());
+        if (filters.action) params.append("action", filters.action);
+        if (filters.limit) params.append("limit", filters.limit.toString());
+        if (filters.per_page) params.append("per_page", filters.per_page.toString());
+        if (filters.page) params.append("page", filters.page.toString());
+
+        return this.get(`/logs?${params.toString()}`);
+    }
+
+    async getListingLogs(filters: LogFilters = {}): Promise<ApiResponse<PaginatedResponse<ListingLog> | ListingLog[]>> {
+        const params = new URLSearchParams();
+        params.append("type", "listing");
+
+        if (filters.user_id) params.append("user_id", filters.user_id.toString());
+        if (filters.listing_id) params.append("listing_id", filters.listing_id.toString());
+        if (filters.action) params.append("action", filters.action);
+        if (filters.limit) params.append("limit", filters.limit.toString());
+        if (filters.per_page) params.append("per_page", filters.per_page.toString());
+        if (filters.page) params.append("page", filters.page.toString());
+
+        return this.get(`/logs?${params.toString()}`);
+    }
+
+    // Genel log metodu (type parametresi ile)
+    async getLogs(type: 'user' | 'listing', filters: LogFilters = {}): Promise<ApiResponse<PaginatedResponse<UserLog | ListingLog> | (UserLog | ListingLog)[]>> {
+        const params = new URLSearchParams();
+        params.append("type", type);
+
+        if (filters.user_id) params.append("user_id", filters.user_id.toString());
+        if (filters.action) params.append("action", filters.action);
+        if (filters.limit) params.append("limit", filters.limit.toString());
+        if (filters.per_page) params.append("per_page", filters.per_page.toString());
+        if (filters.page) params.append("page", filters.page.toString());
+
+        // listing için özel parametre
+        if (type === 'listing' && filters.listing_id) {
+            params.append("listing_id", filters.listing_id.toString());
+        }
+
+        return this.get(`/logs?${params.toString()}`);
     }
 }
 
