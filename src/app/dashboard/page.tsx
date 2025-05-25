@@ -76,19 +76,11 @@ export default function DashboardPage() {
                 } else if (statToUpdate.apiKey === 'listingsCount') {
                     const response = await apiClient.getListingsCount();
                     errorMessageFromApi = response.error;
-                    if (response.data && typeof response.data.count === 'number') {
-                        numericValue = response.data.count;
+                    if (response.data && typeof response.data.total === 'number') {
+                        numericValue = response.data.total;
                         successDescription = "Güncel aktif ilan sayısı";
                     }
                 }
-                //  else if (statToUpdate.apiKey === 'roommateListingsCount') {
-                //      // roommateListingsCount için API çağrısı ve mantığı
-                //  }
-                //  else if (statToUpdate.apiKey === 'growthRate') {
-                //      // growthRate için API çağrısı ve mantığı
-                //  }
-
-
                 if (numericValue !== undefined) {
                     setDashboardStats(prevStats =>
                         prevStats.map(stat =>
@@ -99,7 +91,7 @@ export default function DashboardPage() {
                                     description: successDescription,
                                     isLoading: false,
                                     error: null
-                                  }
+                                }
                                 : stat
                         )
                     );
@@ -157,7 +149,7 @@ export default function DashboardPage() {
                             )}
                         </CardHeader>
                         <CardContent>
-                             <div className={`text-2xl font-bold ${stat.error ? 'text-red-600' : ''}`}>
+                            <div className={`text-2xl font-bold ${stat.error ? 'text-red-600' : ''}`}>
                                 {stat.value}
                             </div>
                             <p className={`text-xs ${stat.error ? 'text-red-500' : 'text-muted-foreground'}`}>
@@ -196,7 +188,7 @@ export default function DashboardPage() {
                         <CardDescription>Sık kullanılan admin işlemleri</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-2">
-                         {/* Örnek Hızlı İşlem */}
+                        {/* Örnek Hızlı İşlem */}
                         <div className="rounded-lg border p-3 hover:bg-gray-50 cursor-pointer">
                             <p className="text-sm font-medium">Kullanıcı Ekle</p>
                             <p className="text-xs text-muted-foreground">Yeni admin kullanıcısı ekle</p>

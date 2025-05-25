@@ -21,7 +21,7 @@ export interface TotalUsersResponse {
 }
 
 export interface ListingsCountResponse {
-    count: number;
+    total: number;
 }
 
 class ApiClient {
@@ -162,7 +162,7 @@ class ApiClient {
         if (sortBy) params.append("sort_by", sortBy);
         if (sortOrder) params.append("sort_order", sortOrder);
         if (perPage) params.append("per_page", perPage.toString());
-        return this.get(`/admins?${params.toString()}`);
+        return this.get(`/users/admins?${params.toString()}`);
     }
 
     async getRegularUsers(page = 1, search?: string, sortBy?: string, sortOrder?: string, perPage?: number): Promise<ApiResponse<PaginatedResponse<any>>> {
@@ -172,27 +172,53 @@ class ApiClient {
         if (sortBy) params.append("sort_by", sortBy);
         if (sortOrder) params.append("sort_order", sortOrder);
         if (perPage) params.append("per_page", perPage.toString());
-        return this.get(`/regular-users?${params.toString()}`);
+        return this.get(`/users/regular-users?${params.toString()}`);
+    }
+
+    async getUserDetails(id: number): Promise<ApiResponse<any>> {
+        return this.get(`/users/${id}`);
     }
 
     // ==== Dashboard ====
     async getTotalUsersCount(): Promise<ApiResponse<TotalUsersResponse>> {
-        return this.get<TotalUsersResponse>(`/total-users`);
+        return this.get<TotalUsersResponse>(`/users/total-users`);
     }
 
     async getListingsCount(): Promise<ApiResponse<ListingsCountResponse>> {
-        return this.get<ListingsCountResponse>(`/listings/count`);
+        return this.get<ListingsCountResponse>(`/listings/total-listings`);
     }
 
     // ==== Listings (Yeni Eklenen Metodlar) ====
-    async getListings(page = 1, search?: string, sortBy?: string, sortOrder?: string, perPage?: number): Promise<ApiResponse<PaginatedResponse<any>>> {
+    async getApprovedListings(page = 1, search?: string, sortBy?: string, sortOrder?: string, perPage?: number): Promise<ApiResponse<PaginatedResponse<any>>> {
         const params = new URLSearchParams();
         params.append("page", page.toString());
         if (search) params.append("search", search);
         if (sortBy) params.append("sort_by", sortBy);
         if (sortOrder) params.append("sort_order", sortOrder);
         if (perPage) params.append("per_page", perPage.toString());
-        return this.get(`/listings?${params.toString()}`);
+        return this.get(`/listings/approved?${params.toString()}`);
+    }
+    async getPendingListings(page = 1, search?: string, sortBy?: string, sortOrder?: string, perPage?: number): Promise<ApiResponse<PaginatedResponse<any>>> {
+        const params = new URLSearchParams();
+        params.append("page", page.toString());
+        if (search) params.append("search", search);
+        if (sortBy) params.append("sort_by", sortBy);
+        if (sortOrder) params.append("sort_order", sortOrder);
+        if (perPage) params.append("per_page", perPage.toString());
+        return this.get(`/listings/pending?${params.toString()}`);
+    }
+    async getRejectedListings(page = 1, search?: string, sortBy?: string, sortOrder?: string, perPage?: number): Promise<ApiResponse<PaginatedResponse<any>>> {
+        const params = new URLSearchParams();
+        params.append("page", page.toString());
+        if (search) params.append("search", search);
+        if (sortBy) params.append("sort_by", sortBy);
+        if (sortOrder) params.append("sort_order", sortOrder);
+        if (perPage) params.append("per_page", perPage.toString());
+        return this.get(`/listings/rejected?${params.toString()}`);
+    }
+
+    async getListing(id: number): Promise<ApiResponse<any>> {
+        return this.get(`/listings/${id}`);
     }
 
     async approveListing(id: number): Promise<ApiResponse<any>> {
