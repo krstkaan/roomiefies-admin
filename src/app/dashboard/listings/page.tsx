@@ -647,7 +647,7 @@ export default function ListingsPage() {
                                         {selectedListing.images.map((image) => (
                                             <div key={image.id} className="aspect-square rounded-lg overflow-hidden bg-gray-100">
                                                 <img
-                                                    src={`http://192.168.1.111:8000/storage/${image.image_path}`}
+                                                    src={`https://helios.roomiefies.com/storage/${image.image_path}`}
                                                     alt="İlan resmi"
                                                     className="w-full h-full object-cover"
                                                 />
